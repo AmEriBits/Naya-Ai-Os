@@ -1,0 +1,10 @@
+{
+  "name": "Naya Household OS",
+  "short_name": "Naya",
+  "description": "Household requests and trusted local vendors, in one calm place.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f8f8f5",
+  "theme_color": "#f8f7f3",
+  "icons": [{ "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }]
+}

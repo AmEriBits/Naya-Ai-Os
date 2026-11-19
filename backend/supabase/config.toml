@@ -1,0 +1,7 @@
+project_id = "naya-os"
+
+[auth]
+enable_signup = false
+
+[functions.interpret-shopping-list]
+verify_jwt = false
