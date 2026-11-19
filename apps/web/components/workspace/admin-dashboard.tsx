@@ -95,7 +95,12 @@ export default function AdminDashboard({
                   <div className="ops-main">
                     <strong>{vendor.business_name}</strong>
                     <span>
-                      {vendor.service_area} · Applied{" "}
+                      {vendor.profiles?.full_name || "Contact not provided"}
+                      {vendor.profiles?.phone
+                        ? ` · ${vendor.profiles.phone}`
+                        : ""}
+                      {" · "}
+                      {vendor.agent_type} · {vendor.service_area} · Applied{" "}
                       {new Date(vendor.created_at).toLocaleDateString("en-NG", {
                         day: "numeric",
                         month: "short",

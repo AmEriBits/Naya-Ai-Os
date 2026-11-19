@@ -11,6 +11,7 @@ import {
   writeLocalStore,
 } from "@/app/types";
 import type { BasketChange, BasketItem, ParsedItem, Role } from "@/app/types";
+import type { SignupDraft } from "@/app/types/onboarding";
 
 export default function useNayaApp() {
   const router = useRouter();
@@ -58,13 +59,18 @@ export default function useNayaApp() {
   const [quoteMessage, setQuoteMessage] = useState("");
   const [authEmail, setAuthEmail] = useState("");
   const [authPassword, setAuthPassword] = useState("");
+  const [signupNotice, setSignupNotice] = useState("");
   const [businessName, setBusinessName] = useState("");
+  const [vendorContactName, setVendorContactName] = useState("");
+  const [vendorPhone, setVendorPhone] = useState("");
+  const [vendorCategory, setVendorCategory] = useState("");
   const [serviceArea, setServiceArea] = useState("");
   const [householdName, setHouseholdName] = useState("");
   const [address, setAddress] = useState("");
   const [householdServiceArea, setHouseholdServiceArea] = useState("");
   const [familySize, setFamilySize] = useState("4");
   const listUploadRef = useRef<HTMLInputElement>(null);
+  const appliedSignupDraft = useRef<string | null>(null);
 
   function goTo(path: string) {
     router.push(path);
@@ -190,8 +196,56 @@ export default function useNayaApp() {
       setHasHousehold(Boolean(household));
       setHasVendorProfile(Boolean(agent));
       setVendorName(agent?.business_name ?? "");
+      if (appliedSignupDraft.current !== activeSession.user.id) {
+        const draft = activeSession.user.user_metadata?.onboarding;
+        if (draft && typeof draft === "object") {
+          setHouseholdName(
+            typeof draft.householdName === "string" ? draft.householdName : "",
+          );
+          setHouseholdServiceArea(
+            typeof draft.serviceArea === "string" && draft.role === "household"
+              ? draft.serviceArea
+              : "",
+          );
+          setFamilySize(
+            typeof draft.familySize === "string" ? draft.familySize : "4",
+          );
+          setBusinessName(
+            typeof draft.businessName === "string" ? draft.businessName : "",
+          );
+          setVendorContactName(
+            typeof draft.contactName === "string" ? draft.contactName : "",
+          );
+          setVendorPhone(typeof draft.phone === "string" ? draft.phone : "");
+          setVendorCategory(
+            typeof draft.category === "string" ? draft.category : "",
+          );
+          setServiceArea(
+            typeof draft.serviceArea === "string" && draft.role === "vendor"
+              ? draft.serviceArea
+              : "",
+          );
+        }
+        appliedSignupDraft.current = activeSession.user.id;
+      }
       const { data: adminFlag } = await supabase.rpc("is_current_user_admin");
       setIsAdmin(Boolean(adminFlag));
+      if (pathname === "/login" || pathname === "/signup") {
+        const metadataRole = activeSession.user.user_metadata?.onboarding?.role;
+        const nextRole: Role = adminFlag
+          ? "admin"
+          : household
+            ? "household"
+            : agent
+              ? "vendor"
+              : metadataRole === "vendor"
+                ? "vendor"
+                : "household";
+        setRole(nextRole);
+        goTo(`/app/${nextRole}`);
+        setLoading(false);
+        return;
+      }
       if (
         role === "household" &&
         pathname.endsWith("/household") &&
@@ -496,9 +550,141 @@ export default function useNayaApp() {
       email: authEmail,
       password: authPassword,
     });
+    if (result.error) {
+      setBusy(false);
+      setError(result.error.message);
+      return;
+    }
+    if (!result.data.session) {
+      setBusy(false);
+      setError("Sign in succeeded but no active session was returned.");
+      return;
+    }
+    const activeSession = result.data.session;
+    const metadata = activeSession.user.user_metadata ?? {};
+    const onboarding = metadata.onboarding;
+    if (
+      typeof metadata.full_name === "string" ||
+      typeof metadata.phone === "string"
+    ) {
+      const { error: profileError } = await supabase
+        .from("profiles")
+        .update({
+          ...(typeof metadata.full_name === "string"
+            ? { full_name: metadata.full_name }
+            : {}),
+          ...(typeof metadata.phone === "string"
+            ? { phone: metadata.phone }
+            : {}),
+        })
+        .eq("user_id", activeSession.user.id);
+      if (profileError) {
+        setBusy(false);
+        setError(profileError.message);
+        return;
+      }
+    }
+    const [memberships, agent, admin] = await Promise.all([
+      supabase
+        .from("household_members")
+        .select("household_id")
+        .eq("user_id", activeSession.user.id)
+        .limit(1),
+      supabase
+        .from("agent_profiles")
+        .select("agent_id")
+        .eq("user_id", activeSession.user.id)
+        .maybeSingle(),
+      supabase.rpc("is_current_user_admin"),
+    ]);
+    const routingError = memberships.error || agent.error || admin.error;
+    if (routingError) {
+      setBusy(false);
+      setError(routingError.message);
+      return;
+    }
+    const nextRole: Role = admin.data
+      ? "admin"
+      : memberships.data?.length
+        ? "household"
+        : agent.data
+          ? "vendor"
+          : onboarding?.role === "vendor"
+            ? "vendor"
+            : "household";
+    setRole(nextRole);
+    setSignupNotice("");
     setBusy(false);
-    if (result.error) setError(result.error.message);
-    else if (result.data.session) goTo("/app/household");
+    goTo(`/app/${nextRole}`);
+  }
+
+  async function createAccount(draft: SignupDraft) {
+    if (!supabase) {
+      setError("Configure Supabase before creating an account.");
+      return;
+    }
+    setBusy(true);
+    setError("");
+    setSignupNotice("");
+    const fullName =
+      draft.role === "vendor" ? draft.contactName : draft.householdName;
+    const phone = draft.role === "vendor" ? draft.phone : undefined;
+    const onboarding =
+      draft.role === "household"
+        ? {
+            role: draft.role,
+            householdName: draft.householdName,
+            serviceArea: draft.serviceArea,
+            familySize: draft.familySize,
+          }
+        : {
+            role: draft.role,
+            contactName: draft.contactName,
+            phone: draft.phone,
+            businessName: draft.businessName,
+            serviceArea: draft.serviceArea,
+            category: draft.category,
+          };
+    const { data, error: signupError } = await supabase.auth.signUp({
+      email: draft.email,
+      password: draft.password,
+      options: {
+        emailRedirectTo: `${window.location.origin}/login`,
+        data: {
+          full_name: fullName,
+          ...(phone ? { phone } : {}),
+          onboarding,
+        },
+      },
+    });
+    if (signupError) {
+      setBusy(false);
+      setError(signupError.message);
+      return;
+    }
+    if (data.user?.identities?.length === 0) {
+      setBusy(false);
+      setSignupNotice(
+        "If this email is already registered, check your inbox or sign in.",
+      );
+      goTo("/login");
+      return;
+    }
+    if (data.session) {
+      const { error: signOutError } = await supabase.auth.signOut();
+      if (signOutError) {
+        setBusy(false);
+        setError(signOutError.message);
+        return;
+      }
+    }
+    setBusy(false);
+    setSignupNotice(
+      data.session
+        ? "Your account is ready. Sign in to continue."
+        : "Account created. Check your email to verify your address, then sign in.",
+    );
+    goTo("/login");
   }
 
   async function createHousehold(e: FormEvent) {
@@ -542,7 +728,7 @@ export default function useNayaApp() {
         agent_id: crypto.randomUUID(),
         user_id: session.user.id,
         business_name: businessName,
-        agent_type: "market_vendor",
+        agent_type: vendorCategory,
         service_area: serviceArea,
         verification_status: "pending",
         created_at: new Date().toISOString(),
@@ -555,12 +741,21 @@ export default function useNayaApp() {
     if (!supabase) return;
     setBusy(true);
     setError("");
+    const { error: profileError } = await supabase
+      .from("profiles")
+      .update({ full_name: vendorContactName, phone: vendorPhone })
+      .eq("user_id", session.user.id);
+    if (profileError) {
+      setBusy(false);
+      setError(profileError.message);
+      return;
+    }
     const { error: insertError } = await supabase
       .from("agent_profiles")
       .insert({
         user_id: session.user.id,
         business_name: businessName,
-        agent_type: "market_vendor",
+        agent_type: vendorCategory,
         service_area: serviceArea,
         verification_status: "pending",
       });
@@ -1180,8 +1375,15 @@ export default function useNayaApp() {
     setAuthEmail,
     authPassword,
     setAuthPassword,
+    signupNotice,
     businessName,
     setBusinessName,
+    vendorContactName,
+    setVendorContactName,
+    vendorPhone,
+    setVendorPhone,
+    vendorCategory,
+    setVendorCategory,
     serviceArea,
     setServiceArea,
     householdName,
@@ -1200,6 +1402,7 @@ export default function useNayaApp() {
     switchWorkspace,
     enterLocalPreview,
     handleAuth,
+    createAccount,
     createHousehold,
     registerVendor,
     handleListUpload,

@@ -1,7 +1,7 @@
 project_id = "naya-os"
 
 [auth]
-enable_signup = false
+enable_signup = true
 
 [functions.interpret-shopping-list]
 verify_jwt = false

@@ -2,6 +2,7 @@
 
 import { ArrowRight, Clock3, ShieldCheck } from "lucide-react";
 import AuthScreen from "@/components/auth/auth-screen";
+import SignupScreen from "@/components/auth/signup-screen";
 import LandingPage from "@/components/landing/landing-page";
 import SetupHousehold from "@/components/onboarding/setup-household";
 import SetupScreen from "@/components/onboarding/setup-screen";
@@ -27,14 +28,14 @@ export default function NayaApp() {
           app.session
             ? () => app.goTo("/app/household")
             : app.isConfigured
-              ? () => app.goTo("/login")
+              ? () => app.goTo("/signup")
               : app.enterLocalPreview
         }
         startLabel={
           app.session
             ? "Open workspace"
             : app.isConfigured
-              ? "Sign in"
+              ? "Create account"
               : "Explore Naya"
         }
       />
@@ -44,6 +45,14 @@ export default function NayaApp() {
       <SetupScreen
         onLocalPreview={app.enterLocalPreview}
         onBack={() => app.goTo("/")}
+      />
+    );
+  if (app.pathname === "/signup" && !app.session)
+    return (
+      <SignupScreen
+        busy={app.busy || app.loading}
+        error={app.error}
+        onSubmit={app.createAccount}
       />
     );
   if (!app.session)
@@ -56,6 +65,7 @@ export default function NayaApp() {
         onSubmit={app.handleAuth}
         busy={app.busy}
         error={app.error}
+        notice={app.signupNotice}
       />
     );
   if (
@@ -143,6 +153,12 @@ export default function NayaApp() {
           busy={app.busy}
           business={app.businessName}
           setBusiness={app.setBusinessName}
+          contactName={app.vendorContactName}
+          setContactName={app.setVendorContactName}
+          phone={app.vendorPhone}
+          setPhone={app.setVendorPhone}
+          category={app.vendorCategory}
+          setCategory={app.setVendorCategory}
           area={app.serviceArea}
           setArea={app.setServiceArea}
         />

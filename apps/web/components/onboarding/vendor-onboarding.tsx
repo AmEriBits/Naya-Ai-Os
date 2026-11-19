@@ -7,6 +7,12 @@ export default function VendorOnboarding({
   busy,
   business,
   setBusiness,
+  contactName,
+  setContactName,
+  phone,
+  setPhone,
+  category,
+  setCategory,
   area,
   setArea,
 }: {
@@ -14,6 +20,12 @@ export default function VendorOnboarding({
   busy: boolean;
   business: string;
   setBusiness: (v: string) => void;
+  contactName: string;
+  setContactName: (v: string) => void;
+  phone: string;
+  setPhone: (v: string) => void;
+  category: string;
+  setCategory: (v: string) => void;
   area: string;
   setArea: (v: string) => void;
 }) {
@@ -25,10 +37,33 @@ export default function VendorOnboarding({
       <span className="eyebrow">JOIN THE VENDOR NETWORK</span>
       <h2>Bring your shop onto Naya.</h2>
       <p>
-        Share your business name and service area. We review every vendor before
-        requests are shared.
+        Share your contact details, business category, and service area. We
+        review every vendor before requests are shared.
       </p>
       <form onSubmit={onSubmit} className="onboarding-form">
+        <label className="field-label" htmlFor="vendor-contact-name">
+          Contact name
+        </label>
+        <input
+          className="text-input"
+          id="vendor-contact-name"
+          required
+          autoComplete="name"
+          value={contactName}
+          onChange={(e) => setContactName(e.target.value)}
+        />
+        <label className="field-label" htmlFor="vendor-phone">
+          Contact phone
+        </label>
+        <input
+          className="text-input"
+          id="vendor-phone"
+          type="tel"
+          required
+          autoComplete="tel"
+          value={phone}
+          onChange={(e) => setPhone(e.target.value)}
+        />
         <label className="field-label" htmlFor="business-name">
           Business or stall name
         </label>
@@ -39,6 +74,17 @@ export default function VendorOnboarding({
           value={business}
           onChange={(e) => setBusiness(e.target.value)}
           placeholder="e.g. Iya Bola Fresh Foods"
+        />
+        <label className="field-label" htmlFor="vendor-category">
+          Business category
+        </label>
+        <input
+          className="text-input"
+          id="vendor-category"
+          required
+          value={category}
+          onChange={(e) => setCategory(e.target.value)}
+          placeholder="e.g. Fresh produce"
         />
         <label className="field-label" htmlFor="service-area">
           Market and service area

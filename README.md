@@ -21,7 +21,7 @@ Requirements: Node 22 or newer, pnpm 11, and a Supabase project.
 2. Copy `.env.example` to both `apps/web/.env.local` and `apps/admin/.env.local`. Set `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` in each file from the project API settings; set `NEXT_PUBLIC_ADMIN_URL` in the web app file to the admin app URL. Next.js reads environment files from each app directory.
 3. Install dependencies from the repository root with `pnpm install`.
 4. Run the household/vendor app with `pnpm dev` at `http://localhost:3000`. Run the separate admin app with `pnpm --filter @naya/admin dev` at `http://localhost:3001`.
-5. Disable public signups in the hosted Supabase Auth settings before inviting anyone. The local `backend/supabase/config.toml` also sets `enable_signup = false`, but that setting does not change an already-hosted project. Send invitations with the redirect URL `<staging-site>/accept-invite`; the invitee sets a password there. Vendor verification remains a separate operator action.
+5. Enable public email/password signups in the hosted Supabase Auth settings; the local `backend/supabase/config.toml` sets `enable_signup = true` for local development but does not change hosted settings. Add `<staging-site>/login` and the local development callback to the Auth redirect allowlist so new users can confirm their email. Household users create their household after sign-in; vendor applicants remain pending until an operator verifies them. Signup metadata is used only to prefill onboarding, never to grant access.
 6. Deploy the `interpret-shopping-list` Supabase Edge Function. Set `OPENAI_API_KEY` and optional `OPENAI_MODEL` as backend function secrets; the browser never receives the AI key. A database-enforced limit allows 30 list interpretations per authenticated user each UTC day.
 7. Grant admin access only to a trusted operator, using the Supabase SQL editor after confirming the user ID: `insert into public.admin_users (user_id, granted_by) values ('<operator-user-uuid>', '<granting-operator-uuid>');`. The admin role cannot be self-selected or self-granted.
 
@@ -44,7 +44,7 @@ Add the local development URL and the exact staging URL to Supabase Auth's redir
 - Vendor basket-change proposals with a household approval gate; declining pauses the order until the vendor revises and resubmits.
 - Household delivery confirmation or issue reporting, vendor verification, and admin dispute-resolution notes through guarded RPCs.
 - Admin read access to platform queues is gated by operator-granted membership in `admin_users`.
-- Invite-only app onboarding: sign-in only, with an invitation-session password setup route at `/accept-invite`. The hosted Supabase Auth signup setting and real invite delivery still require staging verification.
+- Public household signup and vendor applications with email/password authentication. Sign-in routes to the database-backed household or vendor workspace; vendor applications remain pending until admin approval. Signup metadata is onboarding draft data only. Household delivery addresses are collected after sign-in.
 
 ## Local preview mode
 

@@ -78,9 +78,10 @@ The starter stops at creating an order in `awaiting_payment`. It does not claim 
 
 ## Private beta scope freeze (2026-11-19)
 
-Target: invite-only pilot by 2026-11-26, starting in **NAF Valley Estate**.
+Target: controlled pilot by 2026-11-26, starting in **NAF Valley Estate**.
 
-- Access is invite-only. Operators send invitations manually through Supabase Auth; public signups must be disabled.
+- Household account creation and vendor applications are public. Vendor applications require manual operator approval before the vendor can view or quote on requests. Email verification should be enabled for hosted Auth.
+- Signup metadata is only an onboarding draft/prefill; database memberships, vendor profiles, and operator-granted admin access remain authoritative.
 - Beta flow: household creates and reviews a shopping request, verified vendors submit itemized quotes, and the household compares and accepts a quote. Acceptance creates an order record in `awaiting_payment`.
 - The order record does not mean payment was collected or safeguarded, and it does not authorize shopping or delivery. No in-app payment, escrow, payout, refund, or fulfillment progression is in this beta.
 - If fulfillment is enabled after payment and operations are approved, use vendor self-delivery or customer pickup. Do not promise Naya rider dispatch or live tracking.
@@ -92,7 +93,7 @@ Target: invite-only pilot by 2026-11-26, starting in **NAF Valley Estate**.
 - The `interpret-shopping-list` Edge Function checks the user's session and applies a database-backed limit of 30 calls per user per UTC day. Its provider secret is server-side; deployment and secret configuration could not be verified.
 - The Edge Function now rejects malformed, empty, and oversized list input before consuming the daily AI quota. This is a local code change; staging behavior still needs to be exercised.
 - No linked staging project, local Supabase credentials, Supabase CLI, or hosting/CI deployment configuration is available in this workspace. The infrastructure directory contains documentation only; a local preview is not staging.
-- The app now has sign-in-only UI and an invitation-session password setup route at `/accept-invite`. Local Supabase config disables public signup. Hosted Auth settings, invite delivery, and redirect behavior remain unverified and must be completed before invitations are sent.
+- The app now provides public role-specific signup, email/password sign-in, and metadata-prefilled household/vendor onboarding. Local Supabase config allows signup. Hosted Auth settings, email confirmation, and redirect behavior still need staging verification.
 - The landing page now describes the quote-only pilot, removes unsupported social proof and pricing, and labels future capabilities as concepts. Staging and account-level verification are still required before publishing or inviting beta users.
 
 ### Explicit action items to reach beta
@@ -101,7 +102,7 @@ Target: invite-only pilot by 2026-11-26, starting in **NAF Valley Estate**.
 
 - [ ] Create a **new Supabase staging project** for this starter. Do not apply these migrations to the Lovable or production database; the migrations are not an in-place migration for that backend.
 - [x] Select Vercel as the web host; use separate projects rooted at `apps/web` and `apps/admin`.
-- [ ] Deploy the staging app and record its assigned URL. Add that URL, the local development URL, and the invite callback path (`/accept-invite`) to the Supabase Auth redirect allowlist. This workspace has no Git remote or Vercel deployment connection yet.
+- [ ] Deploy the staging app and record its assigned URL. Add that URL and the local development callback to the Supabase Auth redirect allowlist.
 - [ ] Put `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` in each app's ignored `.env.local` and the hosting provider's staging environment settings. These are public client configuration; never put the Supabase service-role key or `OPENAI_API_KEY` in a `NEXT_PUBLIC_` variable or browser bundle.
 - [ ] Keep project references and secrets out of chat. Share only the staging URL and non-secret project reference if hands-on deployment is needed.
 
@@ -137,15 +138,15 @@ Target: invite-only pilot by 2026-11-26, starting in **NAF Valley Estate**.
 
 **Done when:** the authenticated request works in staging, invalid/unauthenticated requests are rejected, quota behavior is confirmed, and only the user-reviewed list can be submitted.
 
-#### 4. Implement invitation-only onboarding (developer + operator)
+#### 4. Implement household signup and vendor applications (developer + operator)
 
-- [x] Remove the public create-account path and add an invitation-session password setup route at `/accept-invite`.
-- [x] Set `enable_signup = false` in local Supabase config.
-- [ ] Disable public signups in the hosted staging project's Supabase Auth settings; local config does not change hosted settings.
-- [x] Document the operator procedure and invite redirect path. Keep vendor verification as a separate admin action.
-- [ ] Send a test invitation from Supabase Auth; verify the invited user can set a password and sign in, while an uninvited address cannot create an account.
+- [x] Add public role-specific signup and email/password sign-in.
+- [x] Enable signup in local Supabase config; configure hosted email confirmation and redirect URLs separately.
+- [x] Route signed-in users using database memberships/vendor profiles/admin authorization; use metadata only to select and prefill onboarding.
+- [x] Keep vendor applications pending and expose their contact details to authorized admins for review.
+- [ ] Test household signup, vendor application, email confirmation, sign-in routing, and rejection of unverified vendor quote access on staging.
 
-**Done when:** only operator-invited users can authenticate, the invitation flow works on the staging domain, and vendor accounts remain unable to quote until verified.
+**Done when:** household accounts can complete onboarding, vendor applications are reviewed before access, role routing reflects persisted database state, and unverified vendors cannot quote.
 
 #### 5. Make public claims beta-safe (developer + product owner)
 

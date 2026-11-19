@@ -10,6 +10,7 @@ export default function AuthScreen({
   onSubmit,
   busy,
   error,
+  notice,
 }: {
   email: string;
   setEmail: (v: string) => void;
@@ -18,6 +19,7 @@ export default function AuthScreen({
   onSubmit: (e: FormEvent) => void;
   busy: boolean;
   error: string;
+  notice: string;
 }) {
   return (
     <div className="auth-screen">
@@ -59,7 +61,8 @@ export default function AuthScreen({
         <div className="auth-form-wrap">
           <span className="eyebrow">WELCOME BACK</span>
           <h2>Good to see you.</h2>
-          <p>Sign in to your invited Naya workspace.</p>
+          <p>Sign in to your Naya workspace.</p>
+          {notice && <div className="notice notice-success">{notice}</div>}
           {error && <div className="notice notice-error">{error}</div>}
           <form onSubmit={onSubmit}>
             <label className="field-label" htmlFor="auth-email">
@@ -99,8 +102,7 @@ export default function AuthScreen({
             </button>
           </form>
           <p className="auth-invite-note">
-            Naya uses invitation-based access. If you have an invitation, open
-            the link in your email to set your password.
+            New to Naya? <a href="/signup">Create an account</a>
           </p>
           <div className="auth-security">
             <ShieldCheck size={15} /> Secured by your private Naya workspace

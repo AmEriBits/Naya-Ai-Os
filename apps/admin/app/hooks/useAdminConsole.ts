@@ -51,7 +51,7 @@ export default function useAdminConsole() {
       supabase
         .from("agent_profiles")
         .select(
-          "agent_id,business_name,service_area,verification_status,created_at",
+          "agent_id,business_name,agent_type,service_area,verification_status,created_at,profiles(full_name,phone)",
         )
         .order("created_at", { ascending: false })
         .limit(50),
