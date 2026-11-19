@@ -65,6 +65,7 @@ export default function useNayaApp() {
   const [vendorPhone, setVendorPhone] = useState("");
   const [vendorCategory, setVendorCategory] = useState("");
   const [serviceArea, setServiceArea] = useState("");
+  const [activeHouseholdName, setActiveHouseholdName] = useState("");
   const [householdName, setHouseholdName] = useState("");
   const [address, setAddress] = useState("");
   const [householdServiceArea, setHouseholdServiceArea] = useState("");
@@ -127,6 +128,7 @@ export default function useNayaApp() {
         setError("");
         const db = readLocalStore();
         setHasHousehold(Boolean(db.household));
+        setActiveHouseholdName(db.household?.name ?? "");
         const localVendor = db.vendors.find(
           (item) => item.user_id === activeSession.user.id,
         );
@@ -183,6 +185,7 @@ export default function useNayaApp() {
       const household = memberships?.[0]?.households as {
         name?: string;
       } | null;
+      setActiveHouseholdName(household?.name ?? "");
       const { data: agent, error: agentError } = await supabase
         .from("agent_profiles")
         .select("agent_id, business_name, verification_status, service_area")
@@ -1405,6 +1408,7 @@ export default function useNayaApp() {
     setVendorCategory,
     serviceArea,
     setServiceArea,
+    activeHouseholdName,
     householdName,
     setHouseholdName,
     address,

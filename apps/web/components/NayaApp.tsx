@@ -211,6 +211,7 @@ export default function NayaApp() {
               onConfirm={app.confirmDelivery}
               onBasketDecision={app.decideBasketChange}
               busy={app.busy}
+              householdName={app.activeHouseholdName}
             />
           ) : app.role === "vendor" ? (
             <VendorDashboard

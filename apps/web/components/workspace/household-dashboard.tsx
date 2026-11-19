@@ -43,6 +43,7 @@ export default function HouseholdDashboard({
   onConfirm,
   onBasketDecision,
   busy,
+  householdName,
 }: {
   loading: boolean;
   requests: ShoppingRequest[];
@@ -55,6 +56,7 @@ export default function HouseholdDashboard({
   onConfirm: (id: string, issue?: string) => void;
   onBasketDecision: (id: string, approve: boolean) => void;
   busy: boolean;
+  householdName: string;
 }) {
   const newlyActive = requests.filter((r) =>
     ["published", "quoted", "accepted"].includes(r.status),
@@ -131,6 +133,9 @@ export default function HouseholdDashboard({
       .filter((change: BasketChange) => change.status === "pending")
       .map((change: BasketChange) => ({ change })),
   );
+  const hour = new Date().getHours();
+  const greeting =
+    hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening";
   return (
     <>
       {pendingBasketChanges.map(({ change }) => (
@@ -145,8 +150,10 @@ export default function HouseholdDashboard({
         <div className="welcome-copy">
           <div className="welcome-sun">☼</div>
           <div>
-            <span className="welcome-kicker">A CALMER WEEK STARTS HERE</span>
-            <h2>What would make home easier today?</h2>
+            <span className="welcome-kicker">WELCOME TO NAYA</span>
+            <h2>
+              {greeting}, {householdName || "your household"}.
+            </h2>
             <p>
               Start with a shopping list. Naya helps organize it, and your
               trusted local vendors take it from there.
