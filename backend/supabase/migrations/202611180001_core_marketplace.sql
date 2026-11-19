@@ -451,7 +451,27 @@ create policy "Verified vendors read matching published requests" on public.shop
   )
 );
 create policy "Household members create requests" on public.shopping_requests for insert with check (created_by_user_id = auth.uid() and public.current_user_is_member(household_id) and status = 'published');
-create policy "Household members read request items" on public.request_items for select using (exists(select 1 from public.shopping_requests r where r.request_id = request_items.request_id and (public.current_user_is_member(r.household_id) or (r.status in ('published','quoted') and public.current_user_is_verified_agent() and exists(select 1 from public.households h join public.agent_profiles a on a.user_id = auth.uid() where h.household_id = r.household_id and lower(trim(h.service_area)) = lower(trim(a.service_area))))));
+create policy "Household members read request items" on public.request_items for select using (
+  exists (
+    select 1
+    from public.shopping_requests r
+    where r.request_id = request_items.request_id
+      and (
+        public.current_user_is_member(r.household_id)
+        or (
+          r.status in ('published','quoted')
+          and public.current_user_is_verified_agent()
+          and exists (
+            select 1
+            from public.households h
+            join public.agent_profiles a on a.user_id = auth.uid()
+            where h.household_id = r.household_id
+              and lower(trim(h.service_area)) = lower(trim(a.service_area))
+          )
+        )
+      )
+  )
+);
 create policy "Household members read original request input" on public.request_inputs for select using (exists(select 1 from public.shopping_requests r where r.request_id = request_inputs.request_id and public.current_user_is_member(r.household_id)));
 create policy "Household members create request items" on public.request_items for insert with check (exists(select 1 from public.shopping_requests r where r.request_id = request_items.request_id and public.current_user_is_member(r.household_id) and r.created_by_user_id = auth.uid() and r.status = 'published'));
 create policy "Households and quoting vendors read quotes" on public.quotes for select using (exists(select 1 from public.shopping_requests r where r.request_id = quotes.request_id and public.current_user_is_member(r.household_id)) or agent_id in (select a.agent_id from public.agent_profiles a where a.user_id = auth.uid()));

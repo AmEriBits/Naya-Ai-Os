@@ -4,6 +4,7 @@ dist/
 .next/
 .turbo/
 .vercel/
+backend/supabase/.temp/
 *.tsbuildinfo
 .env
 .env.*
