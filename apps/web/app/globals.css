@@ -1724,6 +1724,27 @@ a {
   width: 100%;
   margin-top: 12px;
 }
+.auth-provider-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 18px 0;
+  color: #a0a7a0;
+  font-size: 9px;
+}
+.auth-provider-divider::before,
+.auth-provider-divider::after {
+  content: "";
+  height: 1px;
+  flex: 1;
+  background: #e9ede8;
+}
+.auth-google {
+  width: 100%;
+  min-height: 40px;
+  justify-content: center;
+  gap: 8px;
+}
 .auth-security {
   display: flex;
   align-items: center;

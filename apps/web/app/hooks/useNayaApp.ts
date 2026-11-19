@@ -13,6 +13,8 @@ import {
 import type { BasketChange, BasketItem, ParsedItem, Role } from "@/app/types";
 import type { SignupDraft } from "@/app/types/onboarding";
 
+const googleSignupRoleKey = "naya.google-signup-role";
+
 export default function useNayaApp() {
   const router = useRouter();
   const pathname = usePathname();
@@ -232,6 +234,7 @@ export default function useNayaApp() {
       setIsAdmin(Boolean(adminFlag));
       if (pathname === "/login" || pathname === "/signup") {
         const metadataRole = activeSession.user.user_metadata?.onboarding?.role;
+        const oauthSignupRole = sessionStorage.getItem(googleSignupRoleKey);
         const nextRole: Role = adminFlag
           ? "admin"
           : household
@@ -240,7 +243,10 @@ export default function useNayaApp() {
               ? "vendor"
               : metadataRole === "vendor"
                 ? "vendor"
-                : "household";
+                : oauthSignupRole === "vendor"
+                  ? "vendor"
+                  : "household";
+        sessionStorage.removeItem(googleSignupRoleKey);
         setRole(nextRole);
         goTo(`/app/${nextRole}`);
         setLoading(false);
@@ -546,6 +552,7 @@ export default function useNayaApp() {
     if (!supabase) return;
     setBusy(true);
     setError("");
+    sessionStorage.removeItem(googleSignupRoleKey);
     const result = await supabase.auth.signInWithPassword({
       email: authEmail,
       password: authPassword,
@@ -616,6 +623,28 @@ export default function useNayaApp() {
     setSignupNotice("");
     setBusy(false);
     goTo(`/app/${nextRole}`);
+  }
+
+  async function handleGoogleAuth(signupRole?: SignupDraft["role"]) {
+    if (!supabase) {
+      setError("Configure Supabase before signing in.");
+      return;
+    }
+    setBusy(true);
+    setError("");
+    if (signupRole) sessionStorage.setItem(googleSignupRoleKey, signupRole);
+    else sessionStorage.removeItem(googleSignupRoleKey);
+    const { error: oauthError } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: `${window.location.origin}/login`,
+      },
+    });
+    if (oauthError) {
+      sessionStorage.removeItem(googleSignupRoleKey);
+      setBusy(false);
+      setError(oauthError.message);
+    }
   }
 
   async function createAccount(draft: SignupDraft) {
@@ -1402,6 +1431,7 @@ export default function useNayaApp() {
     switchWorkspace,
     enterLocalPreview,
     handleAuth,
+    handleGoogleAuth,
     createAccount,
     createHousehold,
     registerVendor,

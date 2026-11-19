@@ -1,6 +1,12 @@
 import type { FormEvent } from "react";
 
-import { ArrowRight, LoaderCircle, ShieldCheck, Sparkles } from "lucide-react";
+import {
+  ArrowRight,
+  Globe2,
+  LoaderCircle,
+  ShieldCheck,
+  Sparkles,
+} from "lucide-react";
 
 export default function AuthScreen({
   email,
@@ -11,6 +17,7 @@ export default function AuthScreen({
   busy,
   error,
   notice,
+  onGoogle,
 }: {
   email: string;
   setEmail: (v: string) => void;
@@ -20,6 +27,7 @@ export default function AuthScreen({
   busy: boolean;
   error: string;
   notice: string;
+  onGoogle: () => void;
 }) {
   return (
     <div className="auth-screen">
@@ -101,6 +109,15 @@ export default function AuthScreen({
               Sign in securely <ArrowRight size={16} />
             </button>
           </form>
+          <div className="auth-provider-divider">OR</div>
+          <button
+            className="button button-light auth-google"
+            type="button"
+            onClick={onGoogle}
+            disabled={busy}
+          >
+            <Globe2 size={16} /> Continue with Google
+          </button>
           <p className="auth-invite-note">
             New to Naya? <a href="/signup">Create an account</a>
           </p>

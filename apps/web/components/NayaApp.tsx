@@ -53,6 +53,7 @@ export default function NayaApp() {
         busy={app.busy || app.loading}
         error={app.error}
         onSubmit={app.createAccount}
+        onGoogle={app.handleGoogleAuth}
       />
     );
   if (!app.session)
@@ -66,6 +67,7 @@ export default function NayaApp() {
         busy={app.busy}
         error={app.error}
         notice={app.signupNotice}
+        onGoogle={() => app.handleGoogleAuth()}
       />
     );
   if (

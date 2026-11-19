@@ -3,6 +3,7 @@ import type { FormEvent } from "react";
 
 import {
   ArrowRight,
+  Globe2,
   Home,
   LoaderCircle,
   ShieldCheck,
@@ -15,10 +16,12 @@ export default function SignupScreen({
   busy,
   error,
   onSubmit,
+  onGoogle,
 }: {
   busy: boolean;
   error: string;
   onSubmit: (draft: SignupDraft) => void;
+  onGoogle: (role: SignupDraft["role"]) => void;
 }) {
   const [role, setRole] = useState<SignupDraft["role"]>("household");
   const [email, setEmail] = useState("");
@@ -251,6 +254,15 @@ export default function SignupScreen({
               Create account <ArrowRight size={16} />
             </button>
           </form>
+          <div className="auth-provider-divider">OR</div>
+          <button
+            className="button button-light auth-google"
+            type="button"
+            onClick={() => onGoogle(role)}
+            disabled={busy}
+          >
+            <Globe2 size={16} /> Continue with Google
+          </button>
           <p className="auth-invite-note">
             Already have an account? <a href="/login">Sign in</a>
           </p>
