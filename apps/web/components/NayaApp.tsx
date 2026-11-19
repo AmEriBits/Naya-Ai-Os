@@ -2,6 +2,7 @@
 
 import { ArrowRight, Clock3, ShieldCheck } from "lucide-react";
 import AuthScreen from "@/components/auth/auth-screen";
+import ResetPasswordScreen from "@/components/auth/reset-password-screen";
 import SignupScreen from "@/components/auth/signup-screen";
 import LandingPage from "@/components/landing/landing-page";
 import SetupHousehold from "@/components/onboarding/setup-household";
@@ -55,6 +56,14 @@ export default function NayaApp() {
         onSubmit={app.createAccount}
       />
     );
+  if (app.passwordRecovery && app.session)
+    return (
+      <ResetPasswordScreen
+        busy={app.busy}
+        error={app.error}
+        onSubmit={app.completePasswordReset}
+      />
+    );
   if (!app.session)
     return (
       <AuthScreen
@@ -67,6 +76,7 @@ export default function NayaApp() {
         error={app.error}
         notice={app.signupNotice}
         onGoogle={() => app.handleGoogleAuth()}
+        onForgotPassword={app.sendPasswordReset}
       />
     );
   if (

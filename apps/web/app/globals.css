@@ -1709,6 +1709,21 @@ a {
   font-weight: 600;
   text-decoration: underline;
 }
+.auth-forgot-password {
+  justify-self: end;
+  border: 0;
+  padding: 2px 0;
+  background: transparent;
+  color: #355b42;
+  cursor: pointer;
+  font: inherit;
+  font-size: 10px;
+  text-decoration: underline;
+}
+.auth-forgot-password:disabled {
+  cursor: wait;
+  opacity: 0.6;
+}
 .auth-form-wrap h2 {
   font:
     600 25px Karla,

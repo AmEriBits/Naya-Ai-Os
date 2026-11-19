@@ -60,6 +60,7 @@ export default function useNayaApp() {
   const [authEmail, setAuthEmail] = useState("");
   const [authPassword, setAuthPassword] = useState("");
   const [signupNotice, setSignupNotice] = useState("");
+  const [passwordRecovery, setPasswordRecovery] = useState(false);
   const [businessName, setBusinessName] = useState("");
   const [vendorContactName, setVendorContactName] = useState("");
   const [vendorPhone, setVendorPhone] = useState("");
@@ -401,7 +402,8 @@ export default function useNayaApp() {
       else setLoading(false);
     });
     const { data: listener } = supabase.auth.onAuthStateChange(
-      (_event, nextSession) => {
+      (event, nextSession) => {
+        if (event === "PASSWORD_RECOVERY") setPasswordRecovery(true);
         setSession(nextSession);
         if (nextSession) void loadWorkspace(nextSession);
         else {
@@ -638,6 +640,43 @@ export default function useNayaApp() {
       setBusy(false);
       setError(oauthError.message);
     }
+  }
+
+  async function sendPasswordReset() {
+    if (!supabase) return;
+    if (!authEmail.trim()) {
+      setError("Enter your email address first, then request a reset link.");
+      return;
+    }
+    setBusy(true);
+    setError("");
+    setSignupNotice("");
+    const { error: resetError } = await supabase.auth.resetPasswordForEmail(
+      authEmail,
+      { redirectTo: `${window.location.origin}/login` },
+    );
+    setBusy(false);
+    if (resetError) {
+      setError(resetError.message);
+      return;
+    }
+    setSignupNotice(
+      "If an account exists for that address, a password reset link is on its way.",
+    );
+  }
+
+  async function completePasswordReset(password: string) {
+    if (!supabase) return;
+    setBusy(true);
+    setError("");
+    const { error: updateError } = await supabase.auth.updateUser({ password });
+    setBusy(false);
+    if (updateError) {
+      setError(updateError.message);
+      return;
+    }
+    setPasswordRecovery(false);
+    setSignupNotice("Password updated. You’re signed in.");
   }
 
   async function createAccount(draft: SignupDraft) {
@@ -1398,6 +1437,7 @@ export default function useNayaApp() {
     authPassword,
     setAuthPassword,
     signupNotice,
+    passwordRecovery,
     businessName,
     setBusinessName,
     vendorContactName,
@@ -1426,6 +1466,8 @@ export default function useNayaApp() {
     enterLocalPreview,
     handleAuth,
     handleGoogleAuth,
+    sendPasswordReset,
+    completePasswordReset,
     createAccount,
     createHousehold,
     registerVendor,

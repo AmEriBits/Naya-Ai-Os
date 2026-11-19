@@ -18,6 +18,7 @@ export default function AuthScreen({
   error,
   notice,
   onGoogle,
+  onForgotPassword,
 }: {
   email: string;
   setEmail: (v: string) => void;
@@ -28,6 +29,7 @@ export default function AuthScreen({
   error: string;
   notice: string;
   onGoogle: () => void;
+  onForgotPassword: () => void;
 }) {
   return (
     <div className="auth-screen">
@@ -100,6 +102,14 @@ export default function AuthScreen({
               minLength={8}
               required
             />
+            <button
+              className="auth-forgot-password"
+              type="button"
+              onClick={onForgotPassword}
+              disabled={busy}
+            >
+              Forgot password?
+            </button>
             <button
               className="button button-primary auth-submit"
               type="submit"
