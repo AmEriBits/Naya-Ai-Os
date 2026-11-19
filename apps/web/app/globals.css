@@ -2045,7 +2045,7 @@ a {
   .sidebar .brand {
     padding: 0 8px;
   }
-  .brand > span:last-child,
+  .sidebar .brand > span:last-child,
   .workspace-switch > div:nth-child(2),
   .workspace-switch > svg,
   .nav-label,
@@ -8249,4 +8249,641 @@ body {
   background: transparent;
   color: #557a8c;
   font-size: 11px;
+}
+
+.landing-mobile-pricing {
+  display: none;
+}
+.landing-nav nav a[aria-current="page"],
+.landing-mobile-pricing[aria-current="page"] {
+  color: var(--brand-primary);
+  font-weight: 700;
+}
+.landing-pricing {
+  text-align: center;
+}
+.landing-pricing > div:first-child {
+  max-width: 720px;
+  margin: 0 auto;
+}
+.landing-price-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  text-align: left;
+}
+.landing-price-grid article {
+  min-height: 380px;
+}
+.landing-price-grid article p {
+  color: #6b7b82;
+  font-size: 11px;
+  line-height: 1.55;
+  margin: 12px 0 0;
+}
+.landing-price-grid article.popular p {
+  color: #d7e1e4;
+}
+.landing-price-grid .landing-price-link {
+  min-height: 40px;
+  margin-top: auto;
+  border-radius: 20px;
+  background: var(--brand-primary);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  font-size: 10px;
+  font-weight: 700;
+  text-decoration: none;
+}
+.landing-price-grid article.popular .landing-price-link {
+  background: #e5eef1;
+  color: var(--brand-deep);
+}
+.landing-pricing-note {
+  margin: 20px 0 8px;
+  color: #697981;
+  font-size: 11px;
+}
+.landing-pricing-more {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--brand-primary);
+  font-size: 12px;
+  font-weight: 700;
+  text-decoration: none;
+}
+.landing-pricing-more:hover,
+.landing-price-grid .landing-price-link:hover {
+  text-decoration: underline;
+}
+
+.pricing-page > main {
+  padding-bottom: 50px;
+}
+.pricing-hero {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 78px 28px 48px;
+  text-align: center;
+}
+.pricing-hero .landing-kicker {
+  justify-content: center;
+  color: #71818a;
+}
+.pricing-hero h1 {
+  margin: 25px 0 16px;
+  color: var(--brand-deep);
+  font:
+    500 clamp(42px, 6vw, 72px)/0.98 "Cormorant Garamond",
+    Georgia,
+    serif;
+  letter-spacing: -0.045em;
+}
+.pricing-hero h1 em,
+.pricing-final h2 em {
+  color: var(--brand-primary);
+  font-weight: 400;
+}
+.pricing-hero > p {
+  max-width: 680px;
+  margin: 0 auto;
+  color: #667780;
+  font-size: 15px;
+  line-height: 1.7;
+}
+.pricing-proposal {
+  width: fit-content;
+  margin: 22px auto 0;
+  padding: 10px 14px;
+  border: 1px solid #dfe8eb;
+  border-radius: 20px;
+  background: #fff;
+  color: var(--brand-hover);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  font-weight: 700;
+}
+.pricing-proposal svg {
+  color: #bc816a;
+}
+.pricing-plans-section,
+.pricing-ai-roadmap,
+.pricing-comparison-section,
+.pricing-faq {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 28px 28px 72px;
+}
+.pricing-plan-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  align-items: stretch;
+  gap: 14px;
+}
+.pricing-plan-card {
+  min-width: 0;
+  padding: 24px 20px 20px;
+  border: 1px solid #e0e8eb;
+  border-radius: 18px;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  box-shadow: 0 8px 26px #2d414d08;
+}
+.pricing-plan-card.is-popular {
+  border-color: var(--brand-deep);
+  background: var(--brand-deep);
+  color: #f7f9fa;
+  box-shadow: 0 18px 42px #2d414d24;
+}
+.pricing-plan-badge {
+  width: fit-content;
+  margin-bottom: 14px;
+  padding: 6px 9px;
+  border-radius: 12px;
+  background: var(--brand-mist);
+  color: var(--brand-hover);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.pricing-plan-card.is-popular .pricing-plan-badge {
+  background: var(--brand-clay);
+  color: #fff;
+}
+.pricing-plan-audience {
+  min-height: 34px;
+  color: #71818a;
+  font-size: 10px;
+  line-height: 1.5;
+}
+.pricing-plan-card.is-popular .pricing-plan-audience,
+.pricing-plan-card.is-popular .pricing-plan-tagline,
+.pricing-plan-card.is-popular .pricing-plan-status {
+  color: #d3e0e4;
+}
+.pricing-plan-card h2 {
+  margin: 6px 0;
+  color: var(--brand-deep);
+  font:
+    600 22px/1.1 "Cormorant Garamond",
+    Georgia,
+    serif;
+}
+.pricing-plan-card.is-popular h2 {
+  color: #fff;
+}
+.pricing-plan-tagline {
+  min-height: 42px;
+  margin: 0;
+  color: #697981;
+  font-size: 11px;
+  line-height: 1.55;
+}
+.pricing-plan-price {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin: 19px 0 2px;
+}
+.pricing-plan-price strong {
+  color: var(--brand-deep);
+  font:
+    600 32px/1 "Cormorant Garamond",
+    Georgia,
+    serif;
+}
+.pricing-plan-card.is-popular .pricing-plan-price strong {
+  color: #fff;
+}
+.pricing-plan-price span {
+  color: #75848b;
+  font-size: 11px;
+}
+.pricing-plan-card.is-popular .pricing-plan-price span {
+  color: #d3e0e4;
+}
+.pricing-plan-status {
+  min-height: 24px;
+  color: #74838a;
+  font-size: 9px;
+}
+.pricing-plan-details {
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid #e8edef;
+}
+.pricing-plan-card.is-popular .pricing-plan-details {
+  border-color: #ffffff2b;
+}
+.pricing-plan-details h3 {
+  margin: 0 0 12px;
+  color: inherit;
+  font-size: 11px;
+}
+.pricing-plan-details ul,
+.pricing-omissions ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+}
+.pricing-plan-details li,
+.pricing-omissions li {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  color: #596c74;
+  font-size: 10px;
+  line-height: 1.55;
+}
+.pricing-plan-details li svg {
+  flex: 0 0 15px;
+  margin-top: 1px;
+  color: var(--brand-primary);
+}
+.pricing-plan-card.is-popular .pricing-plan-details li {
+  color: #e0e9eb;
+}
+.pricing-plan-card.is-popular .pricing-plan-details li svg {
+  color: #a9c5cc;
+}
+.pricing-plan-details li.is-planned svg {
+  color: #b88167;
+}
+.pricing-plan-details li small {
+  display: inline-block;
+  margin-left: 3px;
+  color: #a56d55;
+  font-size: 8px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+.pricing-plan-card.is-popular .pricing-plan-details li small {
+  color: #edc5b7;
+}
+.pricing-omissions {
+  margin-top: 18px;
+  padding-top: 13px;
+  border-top: 1px solid #e8edef;
+}
+.pricing-plan-card.is-popular .pricing-omissions {
+  border-color: #ffffff2b;
+}
+.pricing-omissions summary {
+  color: #71818a;
+  cursor: pointer;
+  font-size: 10px;
+  font-weight: 700;
+}
+.pricing-plan-card.is-popular .pricing-omissions summary {
+  color: #d3e0e4;
+}
+.pricing-omissions ul {
+  margin-top: 12px;
+}
+.pricing-omissions li {
+  color: #77868d;
+  font-size: 9px;
+}
+.pricing-omissions li svg {
+  flex: 0 0 13px;
+  color: #b88167;
+}
+.pricing-plan-cta {
+  width: 100%;
+  min-height: 42px;
+  margin-top: 20px;
+  border-radius: 22px;
+  font-size: 11px;
+}
+.pricing-plan-card:not(.is-popular) .pricing-plan-cta {
+  border: 1px solid #dce5e8;
+  background: #f8fafb;
+  color: var(--brand-deep);
+}
+.pricing-plan-note {
+  margin: 18px 0 0;
+  color: #72828a;
+  font-size: 10px;
+  line-height: 1.6;
+  text-align: center;
+}
+.pricing-section-heading {
+  max-width: 760px;
+  margin: 0 auto 30px;
+  text-align: center;
+}
+.pricing-section-heading h2,
+.pricing-boundaries h2 {
+  margin: 13px 0 8px;
+  color: var(--brand-deep);
+  font:
+    500 clamp(32px, 4vw, 44px)/1.08 "Cormorant Garamond",
+    Georgia,
+    serif;
+  letter-spacing: -0.025em;
+}
+.pricing-section-heading > p,
+.pricing-boundaries p {
+  margin: 0;
+  color: #6d7d84;
+  font-size: 12px;
+  line-height: 1.7;
+}
+.pricing-roadmap-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 13px;
+}
+.pricing-roadmap-grid article {
+  min-height: 226px;
+  padding: 20px;
+  border: 1px solid #e1e9ec;
+  border-radius: 16px;
+  background: #fff;
+}
+.pricing-roadmap-icon {
+  width: 34px;
+  height: 34px;
+  margin-bottom: 16px;
+  border-radius: 11px;
+  background: var(--brand-mist);
+  color: var(--brand-primary);
+  display: grid;
+  place-items: center;
+}
+.pricing-roadmap-icon.is-planned {
+  background: var(--brand-clay-soft);
+  color: #b88167;
+}
+.pricing-roadmap-grid article > small {
+  color: #71818a;
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 0.09em;
+}
+.pricing-roadmap-grid h3 {
+  margin: 8px 0;
+  color: var(--brand-deep);
+  font:
+    600 19px/1.1 "Cormorant Garamond",
+    Georgia,
+    serif;
+}
+.pricing-roadmap-grid p {
+  margin: 0;
+  color: #6c7b82;
+  font-size: 10px;
+  line-height: 1.7;
+}
+.pricing-comparison-scroll {
+  overflow-x: auto;
+  border: 1px solid #e1e9ec;
+  border-radius: 16px;
+  background: #fff;
+}
+.pricing-comparison {
+  width: 100%;
+  min-width: 850px;
+  border-collapse: collapse;
+  text-align: left;
+}
+.pricing-comparison th,
+.pricing-comparison td {
+  padding: 13px 15px;
+  border-bottom: 1px solid #edf1f2;
+  font-size: 10px;
+}
+.pricing-comparison thead th {
+  color: var(--brand-deep);
+  font-size: 10px;
+  line-height: 1.4;
+}
+.pricing-comparison thead th:first-child {
+  width: 34%;
+}
+.pricing-comparison tbody th[scope="row"] {
+  width: 34%;
+  color: #52656e;
+  font-weight: 600;
+}
+.pricing-comparison td {
+  text-align: center;
+}
+.pricing-comparison-group th {
+  padding-top: 17px;
+  background: #f4f7f8;
+  color: var(--brand-hover);
+  font-size: 9px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.pricing-status {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  color: #75838a;
+  font-size: 9px;
+  white-space: nowrap;
+}
+.pricing-status.is-live {
+  color: #3e756a;
+  font-weight: 700;
+}
+.pricing-status.is-planned {
+  color: #a46e51;
+}
+.pricing-status.is-not-live,
+.pricing-status.is-not-included {
+  color: #89959a;
+}
+.pricing-boundaries {
+  max-width: 1224px;
+  margin: 8px auto 72px;
+  padding: 28px 30px;
+  border: 1px solid #e2e8e9;
+  border-radius: 18px;
+  background: #edf3f5;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  align-items: center;
+}
+.pricing-boundaries ul {
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 12px;
+  list-style: none;
+}
+.pricing-boundaries li {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  color: #52666f;
+  font-size: 10px;
+  line-height: 1.55;
+}
+.pricing-boundaries li svg {
+  flex: 0 0 16px;
+  color: var(--brand-primary);
+}
+.pricing-faq-list {
+  max-width: 900px;
+  margin: auto;
+  display: grid;
+  gap: 8px;
+}
+.pricing-faq-list details {
+  padding: 17px 19px;
+  border: 1px solid #e1e9ec;
+  border-radius: 13px;
+  background: #fff;
+}
+.pricing-faq-list summary {
+  color: var(--brand-deep);
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 700;
+}
+.pricing-faq-list p {
+  max-width: 760px;
+  margin: 12px 0 0;
+  color: #697981;
+  font-size: 10px;
+  line-height: 1.7;
+}
+.pricing-final {
+  max-width: 1224px;
+  margin: 0 auto 60px;
+  padding: 52px 24px;
+  border: 1px solid #dfe7ea;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #f1f5f6, #eaf1f4);
+  text-align: center;
+}
+.pricing-final h2 {
+  margin: 12px 0;
+  color: var(--brand-deep);
+  font:
+    500 clamp(34px, 5vw, 52px)/1.04 "Cormorant Garamond",
+    Georgia,
+    serif;
+}
+.pricing-final p {
+  max-width: 620px;
+  margin: 0 auto 20px;
+  color: #667780;
+  font-size: 12px;
+  line-height: 1.7;
+}
+.pricing-final .button {
+  min-height: 44px;
+  padding: 0 20px;
+  border-radius: 22px;
+}
+
+@media (max-width: 1050px) {
+  .pricing-plan-grid,
+  .pricing-roadmap-grid,
+  .landing-price-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .landing-price-grid article:last-child {
+    grid-column: auto;
+  }
+  .pricing-boundaries {
+    margin-right: 28px;
+    margin-left: 28px;
+  }
+  .pricing-final {
+    margin-right: 28px;
+    margin-left: 28px;
+  }
+}
+@media (max-width: 850px) {
+  .landing-mobile-pricing {
+    display: inline-flex;
+    align-items: center;
+    padding: 8px 6px;
+    color: #4b5563;
+    font-size: 12px;
+    font-weight: 700;
+    text-decoration: none;
+  }
+}
+@media (max-width: 620px) {
+  .pricing-hero {
+    padding: 54px 20px 32px;
+  }
+  .pricing-hero .landing-kicker {
+    font-size: 9px;
+  }
+  .pricing-hero > p {
+    font-size: 13px;
+  }
+  .pricing-proposal {
+    max-width: 100%;
+    font-size: 9px;
+  }
+  .pricing-plans-section,
+  .pricing-ai-roadmap,
+  .pricing-comparison-section,
+  .pricing-faq {
+    padding: 20px 18px 48px;
+  }
+  .pricing-plan-grid,
+  .pricing-roadmap-grid,
+  .landing-price-grid {
+    grid-template-columns: 1fr;
+  }
+  .pricing-plan-card {
+    padding: 22px 18px 18px;
+  }
+  .pricing-plan-tagline,
+  .pricing-plan-audience {
+    min-height: 0;
+  }
+  .pricing-roadmap-grid article {
+    min-height: 0;
+  }
+  .pricing-boundaries {
+    margin: 0 18px 48px;
+    padding: 22px 18px;
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  .pricing-final {
+    margin: 0 18px 42px;
+    padding: 38px 18px;
+  }
+  .landing-price-grid article:last-child {
+    grid-column: auto;
+  }
+}
+@media (max-width: 390px) {
+  .landing-nav .brand {
+    font-size: 17px;
+  }
+  .landing-mobile-pricing {
+    padding: 6px 4px;
+    font-size: 10px;
+  }
+  .landing-login {
+    padding: 5px;
+    font-size: 10px;
+  }
+  .landing-nav > div .button {
+    padding: 0 7px;
+    font-size: 9px;
+  }
 }

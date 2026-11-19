@@ -31,23 +31,23 @@ export default function LandingFooter({ onStart }: { onStart: () => void }) {
           >
             <div>
               <h3>Discover</h3>
-              <a href="#capabilities">Capabilities</a>
-              <a href="#how-it-works">How it works</a>
-              <a href="#naya-ai">Naya AI</a>
+              <a href="/#capabilities">Capabilities</a>
+              <a href="/#how-it-works">How it works</a>
+              <a href="/#naya-ai">Naya AI</a>
             </div>
             <div>
               <h3>For everyone</h3>
-              <a href="#for-everyone">Households & vendors</a>
-              <a href="#pricing">Pricing</a>
-              <a href="#capabilities">Product vision</a>
+              <a href="/#for-everyone">Households & vendors</a>
+              <a href="/pricing">Pricing</a>
+              <a href="/#capabilities">Product vision</a>
             </div>
             <div>
               <h3>Get started</h3>
               <button type="button" onClick={onStart}>
                 Open the app <ArrowRight size={13} />
               </button>
-              <a href="#how-it-works">Our process</a>
-              <a href="#naya-ai">Your household concierge</a>
+              <a href="/#how-it-works">Our process</a>
+              <a href="/#naya-ai">Your household concierge</a>
             </div>
           </nav>
         </div>

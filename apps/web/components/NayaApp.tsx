@@ -5,6 +5,7 @@ import AuthScreen from "@/components/auth/auth-screen";
 import ResetPasswordScreen from "@/components/auth/reset-password-screen";
 import SignupScreen from "@/components/auth/signup-screen";
 import LandingPage from "@/components/landing/landing-page";
+import PricingPage from "@/components/landing/pricing-page";
 import SetupHousehold from "@/components/onboarding/setup-household";
 import SetupScreen from "@/components/onboarding/setup-screen";
 import VendorOnboarding from "@/components/onboarding/vendor-onboarding";
@@ -22,6 +23,28 @@ export default function NayaApp() {
   if (app.pathname === "/")
     return (
       <LandingPage
+        onLogin={() =>
+          app.session ? app.goTo("/app/household") : app.goTo("/login")
+        }
+        onStart={
+          app.session
+            ? () => app.goTo("/app/household")
+            : app.isConfigured
+              ? () => app.goTo("/signup")
+              : app.enterLocalPreview
+        }
+        startLabel={
+          app.session
+            ? "Open workspace"
+            : app.isConfigured
+              ? "Create account"
+              : "Explore Naya"
+        }
+      />
+    );
+  if (app.pathname === "/pricing")
+    return (
+      <PricingPage
         onLogin={() =>
           app.session ? app.goTo("/app/household") : app.goTo("/login")
         }

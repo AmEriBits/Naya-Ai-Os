@@ -151,11 +151,20 @@ Target: controlled pilot by 2026-11-26, starting in **NAF Valley Estate**.
 #### 5. Make public claims beta-safe (developer + product owner)
 
 - [x] Replace landing-page payment/escrow claims and FAQs with the quote-only boundary.
-- [x] Remove unsupported support, refund/replacement, social-proof, and pricing claims; mark future capability panels and walkthrough as illustrative.
+- [x] Mark proposed household pricing and AI roadmap capabilities as not purchasable until subscription billing and the listed features are implemented.
+- [x] Keep payment, escrow, delivery, support, refund/replacement, and savings claims bounded by verified live capability.
 - [x] Explain in the household workspace that quote acceptance creates an `awaiting_payment` record only and that the vendor has not started shopping.
 - [ ] Review the final deployed landing page and authenticated screens against the hosted staging behavior before inviting users.
 
-**Done when:** every public and authenticated screen accurately describes the quote-only pilot and makes no unverified operational, payment, support, or social-proof claim.
+**Done when:** every public and authenticated screen accurately describes the quote-only pilot, distinguishes live features from roadmap plans, and makes no unverified operational, payment, support, or social-proof claim.
+
+#### Proposed household pricing and AI tiers (not yet for sale)
+
+The Naya AI Operating System brief describes a broader roadmap than the current grocery request-to-quote beta: meal and budget planning, household memory, predictive purchasing, price intelligence, vendor recommendations, family events and reminders, gift planning, group buying, errands, bill reminders, and home-service coordination. The pricing page presents these as tiered roadmap capabilities rather than live entitlements.
+
+The brief suggests a paid household subscription range of **₦2,000–₦5,000 per month**. The public page uses draft steps of Just Basket (₦0), Naya Household (₦2,000), Naya Household Pro (₦3,500), and Naya Elite (₦5,000) per household/month. These amounts are proposals, not validated prices. Do not enable billing until AI usage limits, operating costs, request limits, included service boundaries, and payment/refund terms are defined.
+
+In the current beta, typed-list interpretation may be used when the AI service is configured, and the household reviews suggestions before publishing a request. Meal planning, budget intelligence, learned household memory, predictive shopping, price forecasting, AI vendor ranking, concierge workflows, subscriptions, payments, and fulfilment are not available. Grocery, delivery, utility, and third-party service costs are never included in the proposed subscription prices.
 
 #### 6. Run the private-beta acceptance pass (developer + pilot operator)
 

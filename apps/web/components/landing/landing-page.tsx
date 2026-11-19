@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 
 import {
   ArrowRight,
@@ -17,7 +17,11 @@ import LandingCapabilities from "@/components/landing/landing-capabilities";
 
 import LandingFooter from "@/components/landing/landing-footer";
 
+import LandingNav from "@/components/landing/landing-nav";
+
 import LandingWalkthrough from "@/components/landing/landing-walkthrough";
+
+import { pricingPlans } from "@/app/lib/pricing-plans";
 
 export default function LandingPage({
   onLogin,
@@ -28,15 +32,7 @@ export default function LandingPage({
   onStart: () => void;
   startLabel: string;
 }) {
-  const [isScrolled, setIsScrolled] = useState(false);
   const landingRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const updateHeader = () => setIsScrolled(window.scrollY > 24);
-    updateHeader();
-    window.addEventListener("scroll", updateHeader, { passive: true });
-    return () => window.removeEventListener("scroll", updateHeader);
-  }, []);
 
   useEffect(() => {
     const root = landingRef.current;
@@ -62,29 +58,11 @@ export default function LandingPage({
 
   return (
     <div ref={landingRef} className="landing-page">
-      <header className={`landing-nav${isScrolled ? " is-scrolled" : ""}`}>
-        <a href="/" className="brand">
-          <span className="brand-mark">n</span>
-          <span>
-            naya<span className="brand-period">.</span>
-            <small>HOUSEHOLD OS</small>
-          </span>
-        </a>
-        <nav>
-          <a href="#how-it-works">How it works</a>
-          <a href="#capabilities">Capabilities</a>
-          <a href="#naya-ai">Naya AI</a>
-          <a href="#for-everyone">For households & vendors</a>
-        </nav>
-        <div>
-          <button className="landing-login" onClick={onLogin}>
-            Sign in
-          </button>
-          <button className="button button-primary" onClick={onStart}>
-            {startLabel} <ArrowRight size={15} />
-          </button>
-        </div>
-      </header>
+      <LandingNav
+        onLogin={onLogin}
+        onStart={onStart}
+        startLabel={startLabel}
+      />
       <main>
         <section className="landing-hero">
           <div className="landing-hero-copy">
@@ -448,84 +426,53 @@ export default function LandingPage({
         </section>
         <section className="landing-pricing" id="pricing">
           <div>
-            <span className="eyebrow">PILOT TERMS</span>
+            <span className="eyebrow">PLANS FOR THE EVERYDAY RHYTHMS OF HOME</span>
             <h2>
-              Pricing is shared
+              Start with a basket.
               <br />
-              before the pilot.
+              Grow with your household.
             </h2>
             <p>
-              No subscription, service fee, or transaction price is published
-              here. Any applicable costs must be confirmed before a transaction
-              could proceed.
+              Begin with clearer grocery choices, then add AI planning and
+              household intelligence as Naya grows.
             </p>
           </div>
           <div className="landing-price-grid">
-            <article>
-              <h3>Household access</h3>
-              <div>
-                <b>By invite</b>
-                <small>Private pilot</small>
-              </div>
-              <ul>
-                <li>
-                  <Check size={14} /> Grocery requests
-                </li>
-                <li>
-                  <Check size={14} /> Review vendor quotes
-                </li>
-                <li>
-                  <Check size={14} /> No payment collected
-                </li>
-              </ul>
-              <button onClick={onStart}>
-                Sign in <ArrowRight size={14} />
-              </button>
-            </article>
-            <article className="popular">
-              <span>PILOT</span>
-              <h3>Vendor access</h3>
-              <div>
-                <b>By invite</b>
-                <small>Verification required</small>
-              </div>
-              <ul>
-                <li>
-                  <Check size={14} /> Eligible requests
-                </li>
-                <li>
-                  <Check size={14} /> Itemized quotes
-                </li>
-                <li>
-                  <Check size={14} /> No fulfilment progression
-                </li>
-              </ul>
-              <button onClick={onStart}>
-                Sign in <ArrowRight size={14} />
-              </button>
-            </article>
-            <article>
-              <h3>Payments</h3>
-              <div>
-                <b>Not connected</b>
-                <small>Awaiting integration</small>
-              </div>
-              <ul>
-                <li>
-                  <Check size={14} /> No money is collected
-                </li>
-                <li>
-                  <Check size={14} /> No escrow or funds held
-                </li>
-                <li>
-                  <Check size={14} /> Quotes do not start shopping
-                </li>
-              </ul>
-              <button type="button" disabled>
-                Not available <ArrowRight size={14} />
-              </button>
-            </article>
+            {pricingPlans.map((plan) => (
+              <article
+                className={plan.popular ? "popular" : ""}
+                key={plan.id}
+              >
+                {plan.badge && <span>{plan.badge}</span>}
+                <h3>{plan.name}</h3>
+                <div>
+                  <b>{plan.price}</b>
+                  <small>{plan.price === "₦0" ? "no subscription" : "/ month"}</small>
+                </div>
+                <p>{plan.tagline}</p>
+                <ul>
+                  <li>
+                    <Check size={14} /> {plan.liveFeatures[0]}
+                  </li>
+                  <li>
+                    <Sparkles size={14} />{" "}
+                    {plan.teaserFeature}
+                  </li>
+                </ul>
+                <a className="landing-price-link" href="/pricing">
+                  See what is included <ArrowRight size={14} />
+                </a>
+              </article>
+            ))}
           </div>
+          <p className="landing-pricing-note">
+            Proposed prices only. Paid plans are not yet purchasable; today’s
+            beta remains quote-only.
+          </p>
+          <a className="landing-pricing-more" href="/pricing">
+            Compare all features and what is still planned{" "}
+            <ArrowRight size={14} />
+          </a>
         </section>
         <section className="landing-commitments">
           <div>
