@@ -17,11 +17,11 @@ import LandingCapabilities from "@/components/landing/landing-capabilities";
 
 import LandingFooter from "@/components/landing/landing-footer";
 
+import LandingHouseholdStories from "@/components/landing/landing-household-stories";
+
 import LandingNav from "@/components/landing/landing-nav";
 
 import LandingWalkthrough from "@/components/landing/landing-walkthrough";
-
-import { pricingPlans } from "@/app/lib/pricing-plans";
 
 export default function LandingPage({
   onLogin,
@@ -379,101 +379,7 @@ export default function LandingPage({
             </article>
           </div>
         </section>
-        <section className="landing-reviews">
-          <div>
-            <span className="eyebrow">PILOT STATUS</span>
-            <h2>Starting with one real workflow.</h2>
-            <p>
-              Staging and account-level checks are still required before
-              households are invited.
-            </p>
-          </div>
-          <div className="landing-review-grid">
-            <article>
-              <div>01</div>
-              <p>Planned private access</p>
-              <footer>
-                <b>01</b>
-                <span>
-                  <strong>Invitation required</strong>
-                  <small>Hosted Auth settings must be verified</small>
-                </span>
-              </footer>
-            </article>
-            <article>
-              <div>02</div>
-              <p>Grocery requests</p>
-              <footer>
-                <b>02</b>
-                <span>
-                  <strong>List to quote</strong>
-                  <small>AI suggestions require service configuration</small>
-                </span>
-              </footer>
-            </article>
-            <article>
-              <div>03</div>
-              <p>No payment flow</p>
-              <footer>
-                <b>03</b>
-                <span>
-                  <strong>Quote acceptance only</strong>
-                  <small>Orders remain awaiting_payment</small>
-                </span>
-              </footer>
-            </article>
-          </div>
-        </section>
-        <section className="landing-pricing" id="pricing">
-          <div>
-            <span className="eyebrow">PLANS FOR THE EVERYDAY RHYTHMS OF HOME</span>
-            <h2>
-              Start with a basket.
-              <br />
-              Grow with your household.
-            </h2>
-            <p>
-              Begin with clearer grocery choices, then add AI planning and
-              household intelligence as Naya grows.
-            </p>
-          </div>
-          <div className="landing-price-grid">
-            {pricingPlans.map((plan) => (
-              <article
-                className={plan.popular ? "popular" : ""}
-                key={plan.id}
-              >
-                {plan.badge && <span>{plan.badge}</span>}
-                <h3>{plan.name}</h3>
-                <div>
-                  <b>{plan.price}</b>
-                  <small>{plan.price === "₦0" ? "no subscription" : "/ month"}</small>
-                </div>
-                <p>{plan.tagline}</p>
-                <ul>
-                  <li>
-                    <Check size={14} /> {plan.liveFeatures[0]}
-                  </li>
-                  <li>
-                    <Sparkles size={14} />{" "}
-                    {plan.teaserFeature}
-                  </li>
-                </ul>
-                <a className="landing-price-link" href="/pricing">
-                  See what is included <ArrowRight size={14} />
-                </a>
-              </article>
-            ))}
-          </div>
-          <p className="landing-pricing-note">
-            Proposed prices only. Paid plans are not yet purchasable; today’s
-            beta remains quote-only.
-          </p>
-          <a className="landing-pricing-more" href="/pricing">
-            Compare all features and what is still planned{" "}
-            <ArrowRight size={14} />
-          </a>
-        </section>
+        <LandingHouseholdStories />
         <section className="landing-commitments">
           <div>
             <span className="eyebrow">WHAT NAYA IS BUILT TO PROTECT</span>

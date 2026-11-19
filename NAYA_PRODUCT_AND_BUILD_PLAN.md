@@ -153,6 +153,7 @@ Target: controlled pilot by 2026-11-26, starting in **NAF Valley Estate**.
 - [x] Replace landing-page payment/escrow claims and FAQs with the quote-only boundary.
 - [x] Mark proposed household pricing and AI roadmap capabilities as not purchasable until subscription billing and the listed features are implemented.
 - [x] Keep payment, escrow, delivery, support, refund/replacement, and savings claims bounded by verified live capability.
+- [x] Label illustrative household scenarios as product previews, never as customer testimonials or verified outcomes.
 - [x] Explain in the household workspace that quote acceptance creates an `awaiting_payment` record only and that the vendor has not started shopping.
 - [ ] Review the final deployed landing page and authenticated screens against the hosted staging behavior before inviting users.
 
