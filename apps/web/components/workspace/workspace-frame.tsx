@@ -270,13 +270,6 @@ export default function WorkspaceFrame({
               <strong>{sessionEmail.split("@")[0]}</strong>
               <small>{liveStatus}</small>
             </div>
-            <button
-              className="icon-button"
-              aria-label="Sign out"
-              onClick={onSignOut}
-            >
-              <LogOut size={16} />
-            </button>
           </div>
         </div>
       </aside>
@@ -295,6 +288,12 @@ export default function WorkspaceFrame({
             >
               <Bell size={18} />
               <i />
+            </button>
+            <button
+              className="button button-light top-sign-out"
+              onClick={onSignOut}
+            >
+              <LogOut size={15} /> Sign out
             </button>
             <div className="top-avatar">
               {(sessionEmail[0] ?? "N").toUpperCase()}

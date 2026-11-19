@@ -13,8 +13,6 @@ import {
 import type { BasketChange, BasketItem, ParsedItem, Role } from "@/app/types";
 import type { SignupDraft } from "@/app/types/onboarding";
 
-const googleSignupRoleKey = "naya.google-signup-role";
-
 export default function useNayaApp() {
   const router = useRouter();
   const pathname = usePathname();
@@ -234,7 +232,6 @@ export default function useNayaApp() {
       setIsAdmin(Boolean(adminFlag));
       if (pathname === "/login" || pathname === "/signup") {
         const metadataRole = activeSession.user.user_metadata?.onboarding?.role;
-        const oauthSignupRole = sessionStorage.getItem(googleSignupRoleKey);
         const nextRole: Role = adminFlag
           ? "admin"
           : household
@@ -243,10 +240,7 @@ export default function useNayaApp() {
               ? "vendor"
               : metadataRole === "vendor"
                 ? "vendor"
-                : oauthSignupRole === "vendor"
-                  ? "vendor"
-                  : "household";
-        sessionStorage.removeItem(googleSignupRoleKey);
+                : "household";
         setRole(nextRole);
         goTo(`/app/${nextRole}`);
         setLoading(false);
@@ -552,7 +546,6 @@ export default function useNayaApp() {
     if (!supabase) return;
     setBusy(true);
     setError("");
-    sessionStorage.removeItem(googleSignupRoleKey);
     const result = await supabase.auth.signInWithPassword({
       email: authEmail,
       password: authPassword,
@@ -625,15 +618,13 @@ export default function useNayaApp() {
     goTo(`/app/${nextRole}`);
   }
 
-  async function handleGoogleAuth(signupRole?: SignupDraft["role"]) {
+  async function handleGoogleAuth() {
     if (!supabase) {
       setError("Configure Supabase before signing in.");
       return;
     }
     setBusy(true);
     setError("");
-    if (signupRole) sessionStorage.setItem(googleSignupRoleKey, signupRole);
-    else sessionStorage.removeItem(googleSignupRoleKey);
     const { error: oauthError } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
@@ -641,7 +632,6 @@ export default function useNayaApp() {
       },
     });
     if (oauthError) {
-      sessionStorage.removeItem(googleSignupRoleKey);
       setBusy(false);
       setError(oauthError.message);
     }

@@ -361,6 +361,12 @@ a {
   top: 6px;
   right: 6px;
 }
+.top-sign-out {
+  min-height: 34px;
+  padding: 0 11px;
+  gap: 7px;
+  font-size: 10px;
+}
 .top-avatar {
   width: 28px;
   height: 28px;
@@ -2148,6 +2154,13 @@ a {
   }
   .top-actions {
     gap: 9px;
+  }
+  .notification-button {
+    display: none;
+  }
+  .top-sign-out {
+    min-height: 32px;
+    padding: 0 9px;
   }
   .role-switch button {
     padding: 6px 8px;
