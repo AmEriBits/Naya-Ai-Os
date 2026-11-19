@@ -4,7 +4,12 @@ import type { Session } from "@supabase/supabase-js";
 import { supabase } from "@/app/lib/supabase";
 import type { AdminData } from "@/app/types/admin";
 
-const emptyData: AdminData = { orders: [], vendors: [], disputes: [] };
+const emptyData: AdminData = {
+  orders: [],
+  vendors: [],
+  disputes: [],
+  counts: { pendingVendors: 0, activeOrders: 0, openDisputes: 0 },
+};
 
 export default function useAdminConsole() {
   const [session, setSession] = useState<Session | null>(null);
@@ -45,6 +50,7 @@ export default function useAdminConsole() {
         .from("orders")
         .select(
           "order_id,status,total_amount,currency,created_at,households(name),quotes(agent_profiles(business_name))",
+          { count: "exact" },
         )
         .order("created_at", { ascending: false })
         .limit(30),
@@ -59,17 +65,38 @@ export default function useAdminConsole() {
         .from("disputes")
         .select(
           "dispute_id,order_id,reason,description,status,created_at,refund_amount",
+          { count: "exact" },
         )
         .in("status", ["open", "under_review"])
         .order("created_at", { ascending: true })
         .limit(30),
     ]);
-    const queryError = orders.error || vendors.error || disputes.error;
+    const [pendingVendorCount, activeOrderCount] = await Promise.all([
+      supabase
+        .from("agent_profiles")
+        .select("agent_id", { count: "exact", head: true })
+        .eq("verification_status", "pending"),
+      supabase
+        .from("orders")
+        .select("order_id", { count: "exact", head: true })
+        .not("status", "in", '("completed","resolved","cancelled")'),
+    ]);
+    const queryError =
+      orders.error ||
+      vendors.error ||
+      disputes.error ||
+      pendingVendorCount.error ||
+      activeOrderCount.error;
     if (queryError) setError(queryError.message);
     setData({
       orders: orders.data ?? [],
       vendors: vendors.data ?? [],
       disputes: disputes.data ?? [],
+      counts: {
+        pendingVendors: pendingVendorCount.count ?? 0,
+        activeOrders: activeOrderCount.count ?? 0,
+        openDisputes: disputes.count ?? 0,
+      },
     });
     setLoading(false);
   }
@@ -170,6 +197,7 @@ export default function useAdminConsole() {
     loading,
     busy,
     error,
+    clearError: () => setError(""),
     data,
     email,
     setEmail,
