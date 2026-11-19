@@ -2112,6 +2112,14 @@ a {
     padding-right: 34px;
   }
 }
+@media (max-width: 850px) and (min-width: 621px) {
+  .app-shell .workspace-menu {
+    left: 72px;
+    right: auto;
+    top: 0;
+    width: min(250px, calc(100vw - 90px));
+  }
+}
 @media (max-width: 620px) {
   body {
     min-width: 360px;
@@ -2146,11 +2154,30 @@ a {
     display: none;
   }
   .sidebar .nav-item {
+    flex: 1;
     height: 45px;
-    min-width: 48px;
+    min-width: 0;
     display: grid;
-    place-items: center;
-    padding: 0;
+    grid-template-rows: 20px auto;
+    justify-items: center;
+    align-content: center;
+    gap: 2px;
+    padding: 2px 3px;
+  }
+  .sidebar .nav-item .nav-item-label {
+    display: block;
+    max-width: 100%;
+    overflow: hidden;
+    color: inherit;
+    font-size: 0;
+    line-height: 1;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .sidebar .nav-item .nav-item-label::after {
+    content: attr(data-mobile-label);
+    display: block;
+    font-size: 8px;
   }
   .sidebar .nav-item svg {
     width: 20px;
@@ -6865,6 +6892,7 @@ body {
   border-color: #e5e7eb;
 }
 .app-shell .workspace-menu {
+  position: absolute;
   z-index: 5;
   left: 2px;
   right: 2px;

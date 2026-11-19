@@ -28,7 +28,7 @@ import type { LucideIcon } from "lucide-react";
 
 import type { Role } from "@/app/types";
 
-type NavItem = { label: string; icon: LucideIcon };
+type NavItem = { label: string; mobileLabel: string; icon: LucideIcon };
 
 export default function WorkspaceFrame({
   role,
@@ -78,24 +78,40 @@ export default function WorkspaceFrame({
   const nav: NavItem[] =
     role === "household"
       ? [
-          { label: "Overview", icon: Home },
-          { label: "Analytics", icon: Activity },
-          { label: "Shopping requests", icon: ShoppingBasket },
-          { label: "Household budget", icon: Wallet },
-          { label: "Family calendar", icon: CalendarDays },
+          { label: "Overview", mobileLabel: "Home", icon: Home },
+          { label: "Analytics", mobileLabel: "Insights", icon: Activity },
+          {
+            label: "Shopping requests",
+            mobileLabel: "Requests",
+            icon: ShoppingBasket,
+          },
+          {
+            label: "Household budget",
+            mobileLabel: "Budget",
+            icon: Wallet,
+          },
+          {
+            label: "Family calendar",
+            mobileLabel: "Calendar",
+            icon: CalendarDays,
+          },
         ]
       : role === "vendor"
         ? [
-            { label: "Overview", icon: Home },
-            { label: "Open requests", icon: Package },
-            { label: "Orders", icon: Truck },
-            { label: "Earnings", icon: Wallet },
+            { label: "Overview", mobileLabel: "Home", icon: Home },
+            { label: "Open requests", mobileLabel: "Requests", icon: Package },
+            { label: "Orders", mobileLabel: "Orders", icon: Truck },
+            { label: "Earnings", mobileLabel: "Earnings", icon: Wallet },
           ]
         : [
-            { label: "Overview", icon: Home },
-            { label: "Orders & payments", icon: CreditCard },
-            { label: "Vendor review", icon: Store },
-            { label: "Disputes", icon: ShieldCheck },
+            { label: "Overview", mobileLabel: "Home", icon: Home },
+            {
+              label: "Orders & payments",
+              mobileLabel: "Orders",
+              icon: CreditCard,
+            },
+            { label: "Vendor review", mobileLabel: "Vendors", icon: Store },
+            { label: "Disputes", mobileLabel: "Disputes", icon: ShieldCheck },
           ];
   const pageEyebrow =
     role === "admin"
@@ -149,6 +165,8 @@ export default function WorkspaceFrame({
               className="workspace-switch"
               onClick={() => setSwitcherOpen((open) => !open)}
               aria-expanded={switcherOpen}
+              aria-label={`Switch workspace. Current: ${workspaceName}`}
+              title={workspaceName}
             >
               {identity}
             </button>
@@ -207,14 +225,18 @@ export default function WorkspaceFrame({
         </div>
         <div className="nav-label">WORKSPACE</div>
         <nav className="side-nav">
-          {nav.map(({ label, icon: Icon }) => (
+          {nav.map(({ label, mobileLabel, icon: Icon }) => (
             <button
               key={label}
               className={`nav-item ${tab === label ? "active" : ""}`}
               onClick={() => setTab(label)}
+              aria-label={label}
+              title={label}
             >
               <Icon size={18} strokeWidth={1.8} />
-              <span>{label}</span>
+              <span className="nav-item-label" data-mobile-label={mobileLabel}>
+                {label}
+              </span>
               {label === "Shopping requests" && outstandingQuotes > 0 && (
                 <b className="nav-count">{outstandingQuotes}</b>
               )}
@@ -225,7 +247,12 @@ export default function WorkspaceFrame({
           <>
             <div className="nav-label nav-label-spaced">YOUR HOME</div>
             <nav className="side-nav">
-              <button className="nav-item" onClick={() => setTab("Meal plans")}>
+              <button
+                className="nav-item"
+                onClick={() => setTab("Meal plans")}
+                aria-label="Meal plans"
+                title="Meal plans"
+              >
                 <Leaf size={18} />
                 <span>Meal plans</span>
                 <span className="soon-dot" />
@@ -233,11 +260,18 @@ export default function WorkspaceFrame({
               <button
                 className="nav-item"
                 onClick={() => setTab("Bills & utilities")}
+                aria-label="Bills & utilities"
+                title="Bills & utilities"
               >
                 <CreditCard size={18} />
                 <span>Bills & utilities</span>
               </button>
-              <button className="nav-item" onClick={() => setTab("Documents")}>
+              <button
+                className="nav-item"
+                onClick={() => setTab("Documents")}
+                aria-label="Documents"
+                title="Documents"
+              >
                 <FileText size={18} />
                 <span>Documents</span>
               </button>
@@ -258,6 +292,8 @@ export default function WorkspaceFrame({
           <button
             className="nav-item settings-item"
             onClick={() => setTab("Settings")}
+            aria-label="Settings"
+            title="Settings"
           >
             <Settings2 size={18} />
             <span>Settings</span>
