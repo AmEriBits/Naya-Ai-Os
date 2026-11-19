@@ -278,12 +278,15 @@ export default function useNayaApp() {
         setLoading(false);
         return;
       }
-      if (agent && agent.verification_status !== "verified")
+      if (role === "household") {
+        setSetupState(household ? "ready" : "no-household");
+      } else if (!agent) {
+        setSetupState("no-vendor");
+      } else if (agent.verification_status !== "verified") {
         setSetupState("pending-vendor");
-      else if (role === "vendor" && !agent) setSetupState("no-vendor");
-      else if (role === "household" && !household)
-        setSetupState("no-household");
-      else setSetupState("ready");
+      } else {
+        setSetupState("ready");
+      }
       if (role === "household") {
         if (!household) {
           setRequests([]);
@@ -1042,11 +1045,26 @@ export default function useNayaApp() {
         setError("Quote not found.");
         return;
       }
+      const expiryTime = quote.expires_at
+        ? Date.parse(quote.expires_at)
+        : Number.NaN;
+      if (
+        quote.status !== "submitted" ||
+        !Number.isFinite(expiryTime) ||
+        expiryTime <= Date.now()
+      ) {
+        setError("This quote is no longer available.");
+        return;
+      }
       const request = db.requests.find(
         (item) => item.request_id === quote.request_id,
       );
       if (!request) {
         setError("Request not found.");
+        return;
+      }
+      if (!["published", "quoted"].includes(request.status)) {
+        setError("This request is no longer open.");
         return;
       }
       const order = {

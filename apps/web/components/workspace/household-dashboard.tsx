@@ -1,7 +1,8 @@
+import { useEffect, useState } from "react";
+
 import {
   ArrowRight,
   ArrowUpRight,
-  BadgeCheck,
   Check,
   ChevronRight,
   FileText,
@@ -58,6 +59,18 @@ export default function HouseholdDashboard({
   busy: boolean;
   householdName: string;
 }) {
+  const [quoteClock, setQuoteClock] = useState<number | null>(null);
+  useEffect(() => {
+    if (quotes.length === 0) {
+      setQuoteClock(null);
+      return;
+    }
+    const updateClock = () => setQuoteClock(Date.now());
+    updateClock();
+    const interval = window.setInterval(updateClock, 15_000);
+    return () => window.clearInterval(interval);
+  }, [quotes.length]);
+
   const newlyActive = requests.filter((r) =>
     ["published", "quoted", "accepted"].includes(r.status),
   );
@@ -89,41 +102,14 @@ export default function HouseholdDashboard({
       quote,
     ]),
   );
-  const recommendations = [...quotesByRequest.values()].map(
-    (requestQuotes) =>
-      [...requestQuotes].sort((a, b) => {
-        const availableA = (a.quote_items ?? []).filter(
-          (item) => item.availability !== "unavailable",
-        ).length;
-        const availableB = (b.quote_items ?? []).filter(
-          (item) => item.availability !== "unavailable",
-        ).length;
-        if (availableA !== availableB) return availableB - availableA;
-        const totalA = (a.quote_items ?? []).reduce(
-          (sum, item) =>
-            sum +
-            (item.availability === "unavailable"
-              ? 0
-              : Number(item.unit_price) * Number(item.quantity)),
-          0,
-        );
-        const totalB = (b.quote_items ?? []).reduce(
-          (sum, item) =>
-            sum +
-            (item.availability === "unavailable"
-              ? 0
-              : Number(item.unit_price) * Number(item.quantity)),
-          0,
-        );
-        if (totalA !== totalB) return totalA - totalB;
-        const etaA = a.delivery_estimate
-          ? new Date(a.delivery_estimate).getTime()
-          : Number.MAX_SAFE_INTEGER;
-        const etaB = b.delivery_estimate
-          ? new Date(b.delivery_estimate).getTime()
-          : Number.MAX_SAFE_INTEGER;
-        return etaA - etaB;
-      })[0],
+  const quoteComparisons = requests.flatMap((request) => {
+    if (!["published", "quoted"].includes(request.status)) return [];
+    const requestQuotes = quotesByRequest.get(request.request_id);
+    return requestQuotes?.length ? [{ request, quotes: requestQuotes }] : [];
+  });
+  const comparisonQuoteCount = quoteComparisons.reduce(
+    (count, comparison) => count + comparison.quotes.length,
+    0,
   );
   const deliveryCount = orders.filter((order) =>
     ["out_for_delivery", "delivered", "completed"].includes(order.status),
@@ -229,9 +215,9 @@ export default function HouseholdDashboard({
         />
         <StatCard
           icon={MessageCircle}
-          label="New vendor quotes"
-          value={loading ? "—" : String(quotes.length)}
-          note="Ready for your review"
+          label="Vendor quotes to compare"
+          value={loading ? "—" : String(comparisonQuoteCount)}
+          note="Check each offer’s expiry"
           tone="lavender"
         />
         <StatCard
@@ -267,7 +253,9 @@ export default function HouseholdDashboard({
           <div>
             <span className="eyebrow">YOUR REQUEST NETWORK</span>
             <h3>Active shoppers at a glance</h3>
-            <p>Verified vendors who have responded to your open requests.</p>
+            <p>
+              Naya-approved vendors who have responded to your open requests.
+            </p>
           </div>
           <span className="small-counter">
             {loading ? "—" : String(shoppers.length)}
@@ -288,7 +276,6 @@ export default function HouseholdDashboard({
                   {name?.[0]?.toUpperCase()}
                 </span>
                 <strong>{name}</strong>
-                <BadgeCheck size={14} />
               </span>
             ))}
           </div>
@@ -348,46 +335,6 @@ export default function HouseholdDashboard({
           )}
         </section>
         <aside className="right-column">
-          <section className="panel quote-panel">
-            <div className="panel-heading">
-              <div>
-                <span className="eyebrow">MATCHED TO YOUR REQUEST</span>
-                <h3>Recommended for you</h3>
-                <p>Best available option within each open request’s quotes.</p>
-              </div>
-              <span className="small-counter">{quotes.length}</span>
-            </div>
-            {loading ? (
-              <LoadingRows />
-            ) : recommendations.length === 0 ? (
-              <div className="mini-empty">
-                <div className="mini-empty-icon">
-                  <Sparkles size={17} />
-                </div>
-                <strong>Recommendations start with real quotes</strong>
-                <p>
-                  When a verified vendor responds to your request, Naya will
-                  compare the items, total, and delivery estimate here.
-                </p>
-              </div>
-            ) : (
-              <div className="quote-list">
-                {recommendations.slice(0, 3).map((quote) => (
-                  <div className="recommended-quote" key={quote.quote_id}>
-                    <div className="recommendation-request-title">
-                      {quote.shopping_requests?.title ??
-                        "Your shopping request"}
-                    </div>
-                    <span className="recommendation-label">
-                      <Sparkles size={12} /> Best fit from quotes for this
-                      request
-                    </span>
-                    <QuoteCard quote={quote} busy={busy} onAccept={onAccept} />
-                  </div>
-                ))}
-              </div>
-            )}
-          </section>
           <section className="insight-card">
             <div className="insight-top">
               <span className="insight-icon">
@@ -408,6 +355,77 @@ export default function HouseholdDashboard({
           </section>
         </aside>
       </div>
+      <section
+        className="panel quote-comparison"
+        aria-labelledby="quote-comparison-title"
+      >
+        <div className="panel-heading">
+          <div>
+            <span className="eyebrow">YOUR CHOICES</span>
+            <h3 id="quote-comparison-title">Compare vendor quotes</h3>
+            <p>Review every submitted offer for each open request.</p>
+          </div>
+          <span className="small-counter">
+            {loading ? "—" : String(comparisonQuoteCount)}
+          </span>
+        </div>
+        <p className="quote-comparison-disclaimer">
+          Quoted totals are item-price sums. Delivery fees are not listed
+          separately in this beta, so a quote may not be an all-in price.
+        </p>
+        {loading ? (
+          <LoadingRows />
+        ) : quoteComparisons.length === 0 ? (
+          <div className="mini-empty">
+            <div className="mini-empty-icon">
+              <MessageCircle size={17} />
+            </div>
+            <strong>No vendor quotes to compare yet</strong>
+            <p>
+              Quotes will appear here as Naya-approved vendors respond to your
+              open requests.
+            </p>
+          </div>
+        ) : (
+          <div className="quote-comparison-groups">
+            {quoteComparisons.map(({ request, quotes: requestQuotes }) => (
+              <section
+                className="quote-comparison-request"
+                key={request.request_id}
+                aria-label={`Quotes for ${request.title}`}
+              >
+                <div className="quote-comparison-request-heading">
+                  <div>
+                    <h4>{request.title}</h4>
+                    {request.budget_limit ? (
+                      <span>Optional budget: {money(request.budget_limit)}</span>
+                    ) : null}
+                  </div>
+                  <span className="quote-comparison-count">
+                    {requestQuotes.length}{" "}
+                    {requestQuotes.length === 1 ? "quote" : "quotes"}
+                  </span>
+                </div>
+                <div className="quote-comparison-grid">
+                  {requestQuotes.map((quote) => (
+                    <QuoteCard
+                      quote={quote}
+                      now={quoteClock}
+                      busy={busy}
+                      onAccept={onAccept}
+                      key={quote.quote_id}
+                    />
+                  ))}
+                </div>
+              </section>
+            ))}
+          </div>
+        )}
+        <p className="quote-comparison-footer">
+          Choosing a quote creates an order that waits for payment. Payment
+          collection and vendor payouts are not connected yet.
+        </p>
+      </section>
       <section className="vendor-queue panel household-orders">
         <div className="panel-heading">
           <div>

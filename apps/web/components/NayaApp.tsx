@@ -229,7 +229,8 @@ export default function NayaApp() {
           </div>
         </div>
       )}
-      {app.setupState === "ready" && (
+      {(app.setupState === "ready" ||
+        (app.role === "household" && app.hasHousehold)) && (
         <>
           {app.role === "household" ? (
             <HouseholdDashboard
