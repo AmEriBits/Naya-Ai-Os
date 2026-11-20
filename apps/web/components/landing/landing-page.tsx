@@ -19,6 +19,8 @@ import LandingFooter from "@/components/landing/landing-footer";
 
 import LandingHouseholdStories from "@/components/landing/landing-household-stories";
 
+import LandingTestimonials from "@/components/landing/landing-testimonials";
+
 import LandingNav from "@/components/landing/landing-nav";
 
 import LandingWalkthrough from "@/components/landing/landing-walkthrough";
@@ -380,6 +382,7 @@ export default function LandingPage({
           </div>
         </section>
         <LandingHouseholdStories />
+        <LandingTestimonials />
         <section className="landing-commitments">
           <div>
             <span className="eyebrow">WHAT NAYA IS BUILT TO PROTECT</span>
