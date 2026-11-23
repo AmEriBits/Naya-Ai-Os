@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 
 import {
   ArrowRight,
@@ -122,6 +122,18 @@ export default function HouseholdDashboard({
   const hour = new Date().getHours();
   const greeting =
     hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening";
+  const [weeklyChecks, setWeeklyChecks] = useState([true, false]);
+  const [weeklyQuestion, setWeeklyQuestion] = useState("");
+  const [savedQuestion, setSavedQuestion] = useState("");
+
+  function saveWeeklyQuestion(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const question = weeklyQuestion.trim();
+    if (!question) return;
+    setSavedQuestion(question);
+    setWeeklyQuestion("");
+  }
+
   return (
     <>
       {pendingBasketChanges.map(({ change }) => (
@@ -165,6 +177,60 @@ export default function HouseholdDashboard({
           <div className="art-sparkle sparkle-a">✳</div>
           <div className="art-sparkle sparkle-b">✦</div>
           <div className="art-leaf">❧</div>
+        </div>
+      </section>
+      <section className="weekly-home-card" aria-labelledby="weekly-home-title">
+        <div className="weekly-home-banner">
+          <div>
+            <span>THIS WEEK</span>
+            <h2 id="weekly-home-title">More room to breathe.</h2>
+          </div>
+          <Sparkles size={25} aria-hidden="true" />
+        </div>
+        <div className="weekly-home-list">
+          <button
+            className={`weekly-home-task${weeklyChecks[0] ? " is-done" : ""}`}
+            onClick={() =>
+              setWeeklyChecks(([first, second]) => [!first, second])
+            }
+            aria-pressed={weeklyChecks[0]}
+          >
+            <span className="weekly-home-check" aria-hidden="true">
+              {weeklyChecks[0] ? <Check size={15} /> : null}
+            </span>
+            <span>Compare nearby market prices</span>
+            <small>Today</small>
+          </button>
+          <button
+            className={`weekly-home-task${weeklyChecks[1] ? " is-done" : ""}`}
+            onClick={() =>
+              setWeeklyChecks(([first, second]) => [first, !second])
+            }
+            aria-pressed={weeklyChecks[1]}
+          >
+            <span className="weekly-home-check" aria-hidden="true">
+              {weeklyChecks[1] ? <Check size={15} /> : null}
+            </span>
+            <span>Plan meals within your budget</span>
+            <small>2 items</small>
+          </button>
+          <form className="weekly-home-ask" onSubmit={saveWeeklyQuestion}>
+            <input
+              id="weekly-home-question"
+              aria-label="Ask about your household"
+              value={weeklyQuestion}
+              onChange={(event) => setWeeklyQuestion(event.target.value)}
+              placeholder="Ask about your household…"
+            />
+            <button type="submit" aria-label="Save household question">
+              <ArrowRight size={20} />
+            </button>
+          </form>
+          {savedQuestion && (
+            <p className="weekly-home-saved" role="status">
+              Saved for this week: {savedQuestion}
+            </p>
+          )}
         </div>
       </section>
       <section className="quick-actions">

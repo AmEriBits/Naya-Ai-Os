@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import ServiceWorkerRegistration from "@/app/ServiceWorkerRegistration";
+import ThemeToggle from "@/components/ui/theme-toggle";
 
 export const metadata: Metadata = {
   title: "Naya — Household OS",
@@ -32,6 +33,7 @@ export default function RootLayout({
         />
       </head>
       <body>
+        <ThemeToggle />
         {children}
         <ServiceWorkerRegistration />
       </body>
